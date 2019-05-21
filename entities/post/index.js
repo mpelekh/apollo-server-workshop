@@ -11,7 +11,7 @@ module.exports.typeDefs = gql`
 
   type Post {
     id: Int!
-    userId: Int!
+    user: User
     title: String
     body: String
     comments: [Comment]
@@ -24,6 +24,10 @@ module.exports.resolvers = {
     posts: (root, args, ctx) => ctx.dataSources.post.getPosts(args.limit)
   },
   Post: {
+    user: (root, args, ctx) => {
+      const { userId } = root
+      return ctx.dataSources.user.getUser(userId)
+    },
     comments: (root, args, ctx) => {
       const { id: postId } = root
       return ctx.dataSources.comment.getComments(postId)
