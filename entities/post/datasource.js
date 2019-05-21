@@ -8,6 +8,10 @@ class PostDataSource extends RESTDataSource {
   getPost(postId) {
     return this.get(`posts/${postId}`)
   }
+
+  getPosts(limit) {
+    return this.get(`posts${limit ? `?_limit=${limit}` : ''}`)
+  }
 }
 
 module.exports = PostDataSource

@@ -5,7 +5,8 @@ module.exports.PostDataSource = PostDataSource
 
 module.exports.typeDefs = gql`
   extend type Query {
-    Post(postId: Int): Post
+    post(postId: Int!): Post
+    posts(limit: Int): [Post]
   }
 
   type Post {
@@ -18,6 +19,7 @@ module.exports.typeDefs = gql`
 
 module.exports.resolvers = {
   Query: {
-    Post: (root, args, ctx) => ctx.dataSources.post.getPost(args.postId)
+    post: (root, args, ctx) => ctx.dataSources.post.getPost(args.postId),
+    posts: (root, args, ctx) => ctx.dataSources.post.getPosts(args.limit)
   }
 }
