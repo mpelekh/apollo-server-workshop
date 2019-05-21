@@ -2,12 +2,14 @@ const Koa = require('koa')
 const { ApolloServer } = require('apollo-server-koa')
 const { typeDefs, resolvers } = require('./entities')
 const { PostDataSource } = require('./entities/post')
+const { CommentDataSource } = require('./entities/comment')
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => ({
-    post: new PostDataSource()
+    post: new PostDataSource(),
+    comment: new CommentDataSource()
   }),
   context: {
     urlPrefix: 'https://jsonplaceholder.typicode.com'
