@@ -1,0 +1,20 @@
+{
+  "name": "graphql-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "prettier --write ./**/*.{js,jsx,ts,tsx,json,css,scss,md}",
+    "start": "node index.js"
+  },
+  "author": "Mykola Pelekh",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-datasource-rest": "^0.4.0",
+    "apollo-server-koa": "^2.5.0",
+    "graphql": "^14.3.0",
+    "koa": "^2.7.0",
+    "lodash": "^4.17.11",
+    "prettier": "^1.17.1"
+  }
+}
