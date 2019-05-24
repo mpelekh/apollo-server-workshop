@@ -9,8 +9,18 @@ const Query = gql`
     _empty: String
   }
 `
+const Subscription = gql`
+  type Subscription {
+    _empty: String
+  }
+`
+const Mutation = gql`
+  type Mutation {
+    _empty: String
+  }
+`
 
-const typeDefs = [Query, Post.typeDefs, Comment.typeDefs, User.typeDefs]
+const typeDefs = [Query, Subscription, Mutation, Post.typeDefs, Comment.typeDefs, User.typeDefs]
 
 const resolvers = merge(Post.resolvers, Comment.resolvers, User.resolvers)
 

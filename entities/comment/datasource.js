@@ -8,6 +8,10 @@ class CommentDataSource extends RESTDataSource {
   getComments(postId) {
     return this.get(`comments${postId ? `?postId=${postId}` : ''}`)
   }
+
+  addComment(postId, comment) {
+    return this.post(`posts/${postId}/comments`, comment)
+  }
 }
 
 module.exports = CommentDataSource
