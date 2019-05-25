@@ -20,7 +20,14 @@ const Mutation = gql`
   }
 `
 
-const typeDefs = [Query, Subscription, Mutation, Post.typeDefs, Comment.typeDefs, User.typeDefs]
+const typeDefs = [
+  Query,
+  Subscription,
+  Mutation,
+  Post.typeDefs,
+  Comment.typeDefs,
+  User.typeDefs
+]
 
 const resolvers = merge(Post.resolvers, Comment.resolvers, User.resolvers)
 

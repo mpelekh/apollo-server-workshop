@@ -5,12 +5,12 @@ module.exports.PostDataSource = PostDataSource
 
 module.exports.typeDefs = gql`
   extend type Query {
-    post(postId: Int!): Post
+    post(postId: ID!): Post
     posts(limit: Int): [Post]
   }
 
   type Post {
-    id: Int!
+    id: ID!
     user: User
     title: String
     body: String

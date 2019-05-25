@@ -1,25 +1,30 @@
 const { gql } = require('apollo-server-koa')
 const CommentDataSource = require('./datasource')
+const pubsub = require('../../pubsub')
 
 module.exports.CommentDataSource = CommentDataSource
 
 module.exports.typeDefs = gql`
   extend type Query {
-    comments(postId: Int): [Comment]
+    comments(postId: ID): [Comment]
   }
-  
+
   extend type Mutation {
-    addComment(postId: Int!, comment: InputComment!): Comment
+    addComment(postId: ID!, comment: InputComment!): Comment
+  }
+
+  extend type Subscription {
+    commentAdded: Comment
   }
 
   type Comment {
-    id: Int!
-    postId: Int!
+    id: ID!
+    postId: ID!
     name: String
     email: String
     body: String
   }
-  
+
   input InputComment {
     name: String
     email: String
@@ -33,7 +38,18 @@ module.exports.resolvers = {
       ctx.dataSources.comment.getComments(args.postId)
   },
   Mutation: {
-    addComment: (root, args, ctx) =>
-      ctx.dataSources.comment.addComment(args.postId, args.comment)
+    addComment: async (root, args, ctx) => {
+      const comment = await ctx.dataSources.comment.addComment(
+        args.postId,
+        args.comment
+      )
+      await pubsub.publish('commentAdded', { commentAdded: comment })
+      return comment
+    }
+  },
+  Subscription: {
+    commentAdded: {
+      subscribe: () => pubsub.asyncIterator('commentAdded')
+    }
   }
 }

@@ -5,12 +5,12 @@ module.exports.UserDataSource = UserDataSource
 
 module.exports.typeDefs = gql`
   extend type Query {
-    user(userId: Int!): User
+    user(userId: ID!): User
     users: [User]
   }
 
   type User {
-    id: Int!
+    id: ID!
     name: String
     username: String
     email: String

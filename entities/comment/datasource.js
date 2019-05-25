@@ -9,8 +9,13 @@ class CommentDataSource extends RESTDataSource {
     return this.get(`comments${postId ? `?postId=${postId}` : ''}`)
   }
 
-  addComment(postId, comment) {
-    return this.post(`posts/${postId}/comments`, comment)
+  async addComment(postId, comment) {
+    const createdComment = await this.post(`posts/${postId}/comments`, comment)
+    return {
+      ...createdComment,
+      postId,
+      id: +new Date()
+    }
   }
 }
 
