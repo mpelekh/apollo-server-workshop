@@ -1,4 +1,5 @@
 const { gql } = require('apollo-server-koa')
+const { withFilter } = require('graphql-subscriptions')
 const CommentDataSource = require('./datasource')
 const pubsub = require('../../pubsub')
 
@@ -14,7 +15,7 @@ module.exports.typeDefs = gql`
   }
 
   extend type Subscription {
-    commentAdded: Comment
+    commentAdded(postId: ID!): Comment
   }
 
   type Comment {
@@ -49,7 +50,10 @@ module.exports.resolvers = {
   },
   Subscription: {
     commentAdded: {
-      subscribe: () => pubsub.asyncIterator('commentAdded')
+      subscribe: withFilter(
+        () => pubsub.asyncIterator('commentAdded'),
+        (payload, variables) => payload.commentAdded.postId === variables.postId
+      )
     }
   }
 }
