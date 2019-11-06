@@ -1,5 +1,6 @@
 const { gql } = require('apollo-server-koa')
 const PostDataSource = require('./datasource')
+const pubsub = require('../../pubsub')
 
 module.exports.PostDataSource = PostDataSource
 
@@ -7,6 +8,10 @@ module.exports.typeDefs = gql`
   extend type Query {
     post(postId: ID!): Post
     posts(limit: Int): [Post]
+  }
+
+  extend type Mutation {
+      addCommentToPost(postId: ID!, comment: InputComment!): Post
   }
 
   type Post {
@@ -23,6 +28,20 @@ module.exports.resolvers = {
     post: (root, args, ctx) => ctx.dataSources.post.getPost(args.postId),
     posts: (root, args, ctx) => ctx.dataSources.post.getPosts(args.limit)
   },
+  Mutation: {
+    addCommentToPost: async (root, args, ctx) => {
+      const comment = await ctx.dataSources.comment.addComment(
+        args.postId,
+        args.comment
+      )
+
+      await pubsub.publish('commentAdded', { commentAdded: comment })
+
+      const postComments = await ctx.dataSources.comment.getComments(args.postId)
+
+      return { comments: [...postComments, comment], id: args.postId }
+    }
+  },
   Post: {
     user: (root, args, ctx) => {
       const { userId } = root
@@ -30,7 +49,7 @@ module.exports.resolvers = {
     },
     comments: (root, args, ctx) => {
       const { id: postId } = root
-      return ctx.dataSources.comment.getComments(postId)
+      return root.comments || ctx.dataSources.comment.getComments(postId)
     }
   }
 }
